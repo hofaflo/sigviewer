@@ -64,7 +64,7 @@ hdiutil create -volname "SigViewer" -srcfolder build/SigViewer.app -ov -format U
 Install a C++ toolchain, Qt 6, and CMake with your package manager. On Debian/Ubuntu:
 
 ```
-sudo apt install cmake build-essential qt6-base-dev qt6-tools-dev
+sudo apt install cmake build-essential qt6-base-dev qt6-tools-dev libqt6svg6-dev
 ```
 
 Then build SigViewer:
@@ -89,6 +89,7 @@ pacman -S --needed \
     mingw-w64-x86_64-ninja \
     mingw-w64-x86_64-qt6-base \
     mingw-w64-x86_64-qt6-tools \
+    mingw-w64-x86_64-qt6-svg \
     mingw-w64-x86_64-libiconv \
     autoconf \
     automake \
