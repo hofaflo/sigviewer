@@ -4,6 +4,7 @@
 
 ### 🔧 Fixed
 - Update libxdf to 1.0.3, which adds proper CMake package version support for the new `SIGVIEWER_SYSTEM_DEPS` option ([#168](https://github.com/cbrnr/sigviewer/issues/168) by [Clemens Brunner](https://github.com/cbrnr))
+- Fix event export to csv missing entries after event deletions ([#170](https://github.com/cbrnr/sigviewer/issues/170))
 
 ## [0.7.2] · 2026-07-06
 ### ✨ Added

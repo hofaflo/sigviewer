@@ -349,7 +349,7 @@ void SaveGuiCommand::exportEventsToCSV ()
 
         QVector<row> events;
 
-        for (unsigned int i = 0; i < event_manager_pt->getNumberOfEvents(); i++)
+        for (EventID i : event_manager_pt->getAllEvents())
         {
             auto evt = event_manager_pt->getEvent(i);
             if (evt != NULL) {
