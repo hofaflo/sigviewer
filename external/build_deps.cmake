@@ -192,9 +192,11 @@ function(_build_libbiosig_from_source version dest_dir)
     #    hand-written biosig4c++/Makefile to add the flag that downgrades the
     #    error back to a warning, which is all older GCC ever emitted for this.
     #
-    # 3. MinGW's legacy CRT aliases include sopen(), which conflicts with
-    #    libbiosig's public sopen() API. Defining NO_OLDNAMES suppresses those
-    #    aliases while retaining their underscored CRT counterparts.
+    # 3. Two libbiosig parsers include iconv.h before biosig.h. On MinGW,
+    #    iconv.h exposes the legacy CRT sopen() alias, which conflicts with
+    #    libbiosig's public sopen() API. Defining NO_OLDNAMES in just those
+    #    translation units suppresses the alias without hiding compatibility
+    #    typedefs needed by other libbiosig sources.
     if(CMAKE_HOST_WIN32)
         set(_getline_c "${_src_dir}/biosig4c++/win32/getline.c")
         file(READ "${_getline_c}" _getline_content)
@@ -205,9 +207,16 @@ function(_build_libbiosig_from_source version dest_dir)
             "${_getline_content}"
         )
 
+        foreach(_sopen_source IN ITEMS
+                "${_src_dir}/biosig4c++/t210/sopen_acqbiopac.c"
+                "${_src_dir}/biosig4c++/t210/sopen_nicolet.c")
+            file(READ "${_sopen_source}" _sopen_content)
+            file(WRITE "${_sopen_source}" "#define NO_OLDNAMES\n${_sopen_content}")
+        endforeach()
+
         set(_biosig_mf "${_src_dir}/biosig4c++/Makefile")
         file(READ "${_biosig_mf}" _mf_content)
-        string(REPLACE "-Wno-deprecated" "-Wno-deprecated -Wno-implicit-function-declaration -DNO_OLDNAMES"
+        string(REPLACE "-Wno-deprecated" "-Wno-deprecated -Wno-implicit-function-declaration"
             _mf_content "${_mf_content}")
         file(WRITE "${_biosig_mf}" "${_mf_content}")
     endif()
