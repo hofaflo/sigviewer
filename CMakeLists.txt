@@ -155,6 +155,8 @@ qt_add_library(sigviewer_objects OBJECT
     src/file_handling/basic_header.h
     src/file_handling/channel_manager.cpp
     src/file_handling/channel_manager.h
+    src/file_handling/event_csv_exporter.cpp
+    src/file_handling/event_csv_exporter.h
     src/file_handling/event_manager.h
     src/file_handling/file_handler_factory.h
     src/file_handling/gzip_decompressor.cpp
@@ -329,6 +331,8 @@ target_compile_definitions(sigviewer_objects PUBLIC
     VERSION_MINOR=${PROJECT_VERSION_MINOR}
     VERSION_BUILD=${PROJECT_VERSION_PATCH}
     $<$<NOT:$<CONFIG:Debug>>:QT_NO_DEBUG_OUTPUT>
+    # libbiosig exposes sopen(), which conflicts with MinGW's legacy CRT alias.
+    $<$<PLATFORM_ID:Windows>:NO_OLDNAMES>
 )
 
 # -- Include paths and link libraries ----------------------------------------
