@@ -211,7 +211,10 @@ function(_build_libbiosig_from_source version dest_dir)
                 "${_src_dir}/biosig4c++/t210/sopen_acqbiopac.c"
                 "${_src_dir}/biosig4c++/t210/sopen_nicolet.c")
             file(READ "${_sopen_source}" _sopen_content)
-            file(WRITE "${_sopen_source}" "#define NO_OLDNAMES\n${_sopen_content}")
+            file(WRITE "${_sopen_source}"
+                "#include <sys/types.h>\n"
+                "#define NO_OLDNAMES\n"
+                "${_sopen_content}")
         endforeach()
 
         set(_biosig_mf "${_src_dir}/biosig4c++/Makefile")

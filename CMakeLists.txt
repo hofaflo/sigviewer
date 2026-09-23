@@ -121,6 +121,7 @@ qt_add_library(sigviewer_objects OBJECT
     src/base/fixed_data_block.h
     src/base/math_utils.cpp
     src/base/math_utils.h
+    src/base/mingw_compat.h
     src/base/signal_channel.cpp
     src/base/signal_channel.h
     src/base/signal_event.cpp
@@ -331,9 +332,15 @@ target_compile_definitions(sigviewer_objects PUBLIC
     VERSION_MINOR=${PROJECT_VERSION_MINOR}
     VERSION_BUILD=${PROJECT_VERSION_PATCH}
     $<$<NOT:$<CONFIG:Debug>>:QT_NO_DEBUG_OUTPUT>
-    # libbiosig exposes sopen(), which conflicts with MinGW's legacy CRT alias.
-    $<$<PLATFORM_ID:Windows>:NO_OLDNAMES>
 )
+
+# libbiosig exposes sopen(), which conflicts with MinGW's legacy CRT alias.
+# The forced include preserves MinGW's compatibility typedefs before disabling
+# the aliases, avoiding failures in Qt's pthread headers.
+if(WIN32 AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_compile_options(sigviewer_objects PUBLIC
+        -include "${CMAKE_CURRENT_SOURCE_DIR}/src/base/mingw_compat.h")
+endif()
 
 # -- Include paths and link libraries ----------------------------------------
 # The autogen include dir (for generated ui_*.h headers) must be propagated
